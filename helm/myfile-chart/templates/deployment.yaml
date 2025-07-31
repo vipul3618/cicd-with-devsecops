@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myfile
+spec:
+  selector:
+    matchLabels:
+      app: myfile
+  template:
+    metadata:
+      labels:
+        app: myfile
+    spec:
+      containers:
+        - name: myfile
+          image: vipul1820/myfile:{{ .Values.image.tag }}
+          resources:
+            limits:
+              memory: '128Mi'
+              cpu: '500m'
+          ports:
+            - containerPort: 80
