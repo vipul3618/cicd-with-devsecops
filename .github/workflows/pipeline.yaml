@@ -88,6 +88,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Cache OWASP Dependency-Check NVD Data
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/dependency-check
+          key: dependency-check-cache-${{ runner.os }}
+          restore-keys: |
+            dependency-check-cache-
+            
       - name: Download and Extract OWASP Dependency-Check v12.1.0
         run: |
           echo "Downloading OWASP Dependency-Check v12.1.0..."
