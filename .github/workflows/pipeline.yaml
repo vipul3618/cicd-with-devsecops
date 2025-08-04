@@ -104,7 +104,8 @@ jobs:
       - name: Run OWASP Dependency-Check
         run: |
           DEP_CHECK_PATH=$(find dependency-check -type f -name "dependency-check.sh")
-          "$DEP_CHECK_PATH" --scan . --format "ALL" --out reports
+          mkdir -p reports  # ✅ Create the reports directory
+          "$DEP_CHECK_PATH" --scan . --format "HTML" --out reports
 
       - name: Upload OWASP Report as Artifact
         uses: actions/upload-artifact@v4
