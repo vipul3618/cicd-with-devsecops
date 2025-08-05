@@ -110,11 +110,6 @@ jobs:
           echo "✔ Found dependency-check.sh at: $DEP_CHECK_PATH"
 
       - name: Run OWASP Dependency-Check
-<<<<<<< HEAD
-        env:
-          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-=======
->>>>>>> 9afca75 (updated ci-cd)
         run: |
           DEP_CHECK_PATH=$(find dependency-check -type f -name "dependency-check.sh")
           mkdir -p reports
