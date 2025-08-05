@@ -101,7 +101,7 @@ jobs:
         run: |
           echo "Downloading OWASP Dependency-Check v12.1.0..."
           curl -sLO https://github.com/jeremylong/DependencyCheck/releases/download/v12.1.0/dependency-check-12.1.0-release.zip
-          unzip -o dependency-check-12.1.0-release.zip -d dependency-check
+          unzip -o dependency-check-12.1.0-release.zip
           ls -R dependency-check  # Confirm extraction
           
           DATA_DIR="$HOME/.dependency-check-data"
