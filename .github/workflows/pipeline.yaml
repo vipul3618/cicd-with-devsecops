@@ -111,7 +111,7 @@ jobs:
 
       - name: Run OWASP Dependency-Check
         env:
-    	  NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+    	    NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
           DEP_CHECK_PATH=$(find dependency-check -type f -name "dependency-check.sh")
           mkdir -p reports  # ✅ Create the reports directory
