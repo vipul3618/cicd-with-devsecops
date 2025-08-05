@@ -110,12 +110,21 @@ jobs:
           echo "✔ Found dependency-check.sh at: $DEP_CHECK_PATH"
 
       - name: Run OWASP Dependency-Check
+<<<<<<< HEAD
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+=======
+>>>>>>> 9afca75 (updated ci-cd)
         run: |
           DEP_CHECK_PATH=$(find dependency-check -type f -name "dependency-check.sh")
-          mkdir -p reports  # ✅ Create the reports directory
-          "$DEP_CHECK_PATH" --scan . --format "HTML" --out reports --nvdApiKey "$NVD_API_KEY"
+          mkdir -p reports
+          "$DEP_CHECK_PATH" \
+            --noupdate \
+            --scan .
+            --exclude .github --exclude tests --exclude docs \
+            --format "HTML" \
+            --out reports \
+            --nvdApiKey="${{ secrets.NVD_API_KEY }}"
           
       - name: Upload OWASP Report as Artifact
         uses: actions/upload-artifact@v4
