@@ -89,35 +89,39 @@ jobs:
           java-version: '17'
 
       - name: Cache OWASP Dependency-Check NVD Data
-        uses: actions/cache@v3
+        id: cache-nvd
+        uses: actions/cache@v4
         with:
-          path: ~/.cache/dependency-check
-          key: dependency-check-cache-${{ runner.os }}
+          path: ~/.dependency-check-data
+          key: dependency-check-nvd-${{ runner.os }}-${{ format('{0:yyyy-ww}', github.run_started_at) }}
           restore-keys: |
-            dependency-check-cache-
+            dependency-check-nvd-${{ runner.os }}-
             
-      - name: Download and Extract OWASP Dependency-Check v12.1.0
+      - name: Download and Run OWASP Dependency-Check v12.1.0
         run: |
           echo "Downloading OWASP Dependency-Check v12.1.0..."
           curl -sLO https://github.com/jeremylong/DependencyCheck/releases/download/v12.1.0/dependency-check-12.1.0-release.zip
           unzip -o dependency-check-12.1.0-release.zip -d dependency-check
           ls -R dependency-check  # Confirm extraction
+          
+          DATA_DIR="$HOME/.dependency-check-data"
+          mkdir -p "$DATA_DIR"
+          
+#      - name: Make dependency-check.sh Executable
+#       run: |
+#          DEP_CHECK_PATH=$(find dependency-check -type f -name "dependency-check.sh")
+#         chmod +x "$DEP_CHECK_PATH"
+#         echo "✔ Found dependency-check.sh at: $DEP_CHECK_PATH"
 
-      - name: Make dependency-check.sh Executable
-        run: |
-          DEP_CHECK_PATH=$(find dependency-check -type f -name "dependency-check.sh")
-          chmod +x "$DEP_CHECK_PATH"
-          echo "✔ Found dependency-check.sh at: $DEP_CHECK_PATH"
-
-      - name: Run OWASP Dependency-Check
-        run: |
-          DEP_CHECK_PATH=$(find dependency-check -type f -name "dependency-check.sh")
           mkdir -p reports
-          "$DEP_CHECK_PATH" \
+          ./dependency-check/bin/dependency-check.sh \
+            --project "My Project Name" \
             --scan . \
-            --exclude .github --exclude tests --exclude docs \
             --format "HTML" \
-            --out reports \
+            --out "reports" \
+            --data "$DATA_DIR" \
+            --nvdApiKey "${{ secrets.NVD_API_KEY }}" \
+            --exclude .github --exclude tests --exclude docs
           
       - name: Upload OWASP Report as Artifact
         uses: actions/upload-artifact@v4
