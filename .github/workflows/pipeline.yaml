@@ -93,7 +93,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.dependency-check-data
-          key: dependency-check-nvd-${{ runner.os }}-${{ github.run_id }}-${{ format('{0:yyyy-ww}', github.event.head_commit.timestamp) }}
+          key: dependency-check-nvd-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
             dependency-check-nvd-${{ runner.os }}-
             
