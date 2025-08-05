@@ -113,7 +113,7 @@ jobs:
         run: |
           DEP_CHECK_PATH=$(find dependency-check -type f -name "dependency-check.sh")
           mkdir -p reports  # ✅ Create the reports directory
-          "$DEP_CHECK_PATH" --scan . --format "HTML" --out reports
+          "$DEP_CHECK_PATH" --scan . --format "HTML" --out reports --nvdApiKey ${{ secrets.NVD_API_KEY }}
 
       - name: Upload OWASP Report as Artifact
         uses: actions/upload-artifact@v4
