@@ -106,13 +106,6 @@ jobs:
           
           DATA_DIR="$HOME/.dependency-check-data"
           mkdir -p "$DATA_DIR"
-          
-#      - name: Make dependency-check.sh Executable
-#       run: |
-#          DEP_CHECK_PATH=$(find dependency-check -type f -name "dependency-check.sh")
-#         chmod +x "$DEP_CHECK_PATH"
-#         echo "✔ Found dependency-check.sh at: $DEP_CHECK_PATH"
-
           mkdir -p reports
           ./dependency-check/bin/dependency-check.sh \
             --project "My Project Name" \
