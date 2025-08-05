@@ -114,8 +114,7 @@ jobs:
           DEP_CHECK_PATH=$(find dependency-check -type f -name "dependency-check.sh")
           mkdir -p reports
           "$DEP_CHECK_PATH" \
-            --noupdate \
-            --scan .
+            --scan . \
             --exclude .github --exclude tests --exclude docs \
             --format "HTML" \
             --out reports \
