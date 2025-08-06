@@ -113,8 +113,9 @@ jobs:
             --format "HTML" \
             --out "reports" \
             --data "$DATA_DIR" \
-            --nvdApiKey "${{ secrets.NVD_API_KEY }}" \
             --exclude .github --exclude tests --exclude docs
+#            --nvdApiKey "${{ secrets.NVD_API_KEY }}" \
+          
           
       - name: Upload OWASP Report as Artifact
         uses: actions/upload-artifact@v4
