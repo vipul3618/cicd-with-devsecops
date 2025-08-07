@@ -33,12 +33,18 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
       - name: Check Quality Gate Status
-        uses: SonarSource/sonarqube-quality-gate-action@v1
-        timeout-minutes: 5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        continue-on-error: true
+        run: |
+          STATUS=$(curl -s "https://sonarcloud.io/api/qualitygates/project_status?projectKey=${{ secrets.SONAR_PROJECT_KEY }}" | jq -r '.projectStatus.status')
+          if [[ "$STATUS" == "FAILED" ]]; then
+            echo "❌ SonarCloud Quality Gate Failed!"
+            exit 1
+          else
+            echo "✅ SonarCloud Quality Gate Passed."
+          fi
 
       - name: Notify Slack (SonarQube Completed)
         uses: rtCamp/action-slack-notify@v2
