@@ -109,6 +109,10 @@ jobs:
           mkdir -p "$DATA_DIR"
           mkdir -p reports
           ./dependency-check/bin/dependency-check.sh \
+            --purge \
+            --data "$DATA_DIR"
+          
+          ./dependency-check/bin/dependency-check.sh \
             --project "My Project Name" \
             --scan . \
             --format "HTML" \
