@@ -189,7 +189,7 @@ jobs:
         uses: zaproxy/action-baseline@v0.11.0
         with:
           # URL of the application to be tested
-          target: 'http://localhost:8080'
+          target: 'http://192.168.49.2:32109'
           # The action will automatically upload the report as an artifact
           artifact_name: ZAP-Baseline-Report
         continue-on-error: true # Do not fail the pipeline if ZAP finds issues
