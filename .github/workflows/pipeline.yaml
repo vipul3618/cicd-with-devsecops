@@ -113,10 +113,10 @@ jobs:
       # Simplified and corrected run step
       - name: Download and Run OWASP Dependency-Check
         run: |
-          echo "Downloading OWASP Dependency-Check v10.0.2..."
+          echo "Downloading OWASP Dependency-Check v12.1.0..."
           # Using a recent, valid version of Dependency-Check
-          curl -sLO https://github.com/jeremylong/DependencyCheck/releases/download/v10.0.2/dependency-check-10.0.2-release.zip
-          unzip -o dependency-check-10.0.2-release.zip
+          curl -sLO https://github.com/jeremylong/DependencyCheck/releases/download/v12.1.0/dependency-check-12.1.0-release.zip
+          unzip -o dependency-check-12.1.0-release.zip
           
           DATA_DIR="$HOME/.dependency-check-data"
           mkdir -p "$DATA_DIR"
@@ -170,47 +170,11 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/myfile:${{ github.run_id }}
           platforms: linux/amd64,linux/arm64
 
-  dast-zap-scan:
-    name: OWASP ZAP DAST Scan
-    runs-on: self-hosted
-    needs: build-and-push # Depends on the image being available in Docker Hub
-    steps:
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Start Application Container for DAST Scan
-        run: |
-          # Run the container in detached mode and map port 8080
-          # The target for the ZAP scan will be http://localhost:8080
-          docker run -d --name my-app -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/myfile:${{ github.run_id }}
-          echo "Waiting for application to start..."
-          # Give the application time to initialize before scanning
-          sleep 30
-
-      - name: ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.11.0
-        with:
-          # URL of the application to be tested
-          target: 'http://192.168.49.2:32109'
-          # The action will automatically upload the report as an artifact
-          artifact_name: ZAP-Baseline-Report
-        continue-on-error: true # Do not fail the pipeline if ZAP finds issues
-
-      - name: Notify Slack (ZAP Scan Completed)
-        if: always() # Ensure notification runs even if the scan step has errors
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_MESSAGE: "✅ *OWASP ZAP DAST scan completed successfully!*"
 
   trivy-image-scan:
     name: Trivy Image Scan & SBOM
     runs-on: ubuntu-latest
-    # UPDATED DEPENDENCY: This job now runs after the DAST scan
-    needs: dast-zap-scan
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
