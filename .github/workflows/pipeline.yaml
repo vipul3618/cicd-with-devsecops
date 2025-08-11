@@ -113,16 +113,18 @@ jobs:
       # Simplified and corrected run step
       - name: Download and Run OWASP Dependency-Check
         run: |
-          echo "Downloading OWASP Dependency-Check v12.1.0..."
-          # Using a recent, valid version of Dependency-Check
-          curl -sLO https://github.com/jeremylong/dependency-check/releases/download/v12.1.0/dependency-check-12.1.0-release.zip
+          echo "Downloading OWASP Dependency-Check..."
+          # NOTE: Using a recent, valid version of Dependency-Check
+          curl -sLO https://github.com/jeremylong/DependencyCheck/releases/download/v12.1.0/dependency-check-12.1.0-release.zip
           unzip -o dependency-check-12.1.0-release.zip
           
           DATA_DIR="$HOME/.dependency-check-data"
           mkdir -p "$DATA_DIR"
           mkdir -p reports
+          ./dependency-check/bin/dependency-check.sh \
+            --purge \
+            --data "$DATA_DIR"
           
-          # Single, efficient command to run the scan
           ./dependency-check/bin/dependency-check.sh \
             --project "My Project Name" \
             --scan . \
@@ -130,7 +132,6 @@ jobs:
             --out "reports" \
             --data "$DATA_DIR" \
             --exclude .github --exclude tests --exclude docs
-       # --nvdApiKey "${{ secrets.NVD_API_KEY }}" # Keep this commented out
 
       - name: Upload OWASP Report as Artifact
         uses: actions/upload-artifact@v4
